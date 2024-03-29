@@ -35,43 +35,43 @@ async def menu(msg: Message):
 
 
    
-# @router.message(Command("start"))
+@router.callback_query(F.data == 'registration')
 
-# async def start_message(message: types.Message):
-#     await message.answer("Здравствуйте! Вас приветствует бот магазина Nura.Kargo")
+async def start_message(query: types.CallbackQuery):
+    await query.message.answer("Здравствуйте! Вас приветствует бот магазина Nura.Kargo")
 
-#     user_id = message.from_user.id
-#     text = message.text
+    user_id = query.message.from_user.id
+    text = query.message.text
     
-#     existing_user = collection.find_one({"user_id": user_id})
-#     if existing_user:
-#         await message.reply("Вы уже зарегистрированы")
-#     else:  
+    existing_user = collection.find_one({"user_id": user_id})
+    if existing_user:
+        await query.message.reply("Вы уже зарегистрированы")
+    else:  
          
-#         await message.answer("Чтобы зарегистрироваться, отправьте свое имя, адрес и номер телефона в формате:\n\nИмя Фамилия\nАдрес\nНомер телефона")
+        await query.message.answer("Чтобы зарегистрироваться, отправьте свое имя, адрес и номер телефона в формате:\n\nИмя Фамилия\nАдрес\nНомер телефона")
         
-#         if '\n' in text:
-#             name, address, phone_number = text.split('\n', 2)
+        if '\n' in text:
+            name, address, phone_number = text.split('\n', 2)
         
                
-#         # Сохранение данных в MongoDB
-#             user_data = {
-#                 "user_id": user_id,
-#                 "name": name,
-#                 "address": address,
-#                 "phone_number": phone_number
-#             }
-#             collection.insert_one(user_data)
+        # Сохранение данных в MongoDB
+            user_data = {
+                "user_id": user_id,
+                "name": name,
+                "address": address,
+                "phone_number": phone_number
+            }
+            collection.insert_one(user_data)
         
-#             await message.reply(f'Спасибо, {name}! Вы успешно зарегистрированы.\n\nВаш адрес: {address}\nВаш номер телефона: {phone_number}')
-#         else:
-#             await message.reply("Пожалуйста, отправьте свое имя, адрес и номер телефона в правильном формате.")
+            await query.message.reply(f'Спасибо, {name}! Вы успешно зарегистрированы.\n\nВаш адрес: {address}\nВаш номер телефона: {phone_number}')
+        else:
+            await query.message.reply("Пожалуйста, отправьте свое имя, адрес и номер телефона в правильном формате.")
     
 
-# @router.message(F.text.lower() == 'подробнее о нашем магазине')
-# async def about(message: types.Message):
-#     profile_url = "Это наш магазин [Nura.Kargo](https://www.instagram.com/nura.kargo?igsh=OTR5M2I4enpsZHY4&utm_source=qr)"
-#     await message.reply(profile_url, parse_mode='Markdown')
+@router.callback_query(F.data == 'about')
+async def about(query: types.CallbackQuery):
+    profile_url = "Это наш магазин [Nura.Kargo](https://www.instagram.com/nura.kargo?igsh=OTR5M2I4enpsZHY4&utm_source=qr)"
+    await query.message.reply(profile_url, parse_mode='Markdown')
 
 
 # @router.message(Command("about"))    
