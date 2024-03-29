@@ -33,7 +33,6 @@ async def menu(msg: Message):
     await msg.answer(text.menu, reply_markup=kb.menu)    
 
 
-
    
 @router.callback_query(F.data == 'registration')
 
@@ -49,11 +48,23 @@ async def start_message(query: types.CallbackQuery):
     else:  
          
         await query.message.answer("Чтобы зарегистрироваться, отправьте свое имя, адрес и номер телефона в формате:\n\nИмя Фамилия\nАдрес\nНомер телефона")
+
+
+@router.message()
+async def handle_register(message: types.Message):
+    user_id = message.from_user.id
+    text = message.text 
+    existing_user = collection.find_one({"user_id": user_id})
+    
+    if existing_user:
+        
+        await message.reply("Вы уже зарегистрированы")
+    
+    else:           
         
         if '\n' in text:
             name, address, phone_number = text.split('\n', 2)
-        
-               
+                    
         # Сохранение данных в MongoDB
             user_data = {
                 "user_id": user_id,
@@ -63,9 +74,9 @@ async def start_message(query: types.CallbackQuery):
             }
             collection.insert_one(user_data)
         
-            await query.message.reply(f'Спасибо, {name}! Вы успешно зарегистрированы.\n\nВаш адрес: {address}\nВаш номер телефона: {phone_number}')
+            await message.reply(f'Спасибо, {name}! Вы успешно зарегистрированы.\n\nВаш адрес: {address}\nВаш номер телефона: {phone_number}')
         else:
-            await query.message.reply("Пожалуйста, отправьте свое имя, адрес и номер телефона в правильном формате.")
+            await message.reply("Пожалуйста, отправьте свое имя, адрес и номер телефона в правильном формате.")
     
 
 @router.callback_query(F.data == 'about')
